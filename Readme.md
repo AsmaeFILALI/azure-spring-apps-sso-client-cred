@@ -199,6 +199,10 @@ Fist we will add dependency for spring securty in pom.xml file
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+       </dependency>
 ```
 
 We will then configure spring security Issuer URI
