@@ -1,6 +1,12 @@
-# Comprehensive Security with Azure Spring Apps, Spring Cloud Gateway SSO, and Spring Security
+# Comprehensive Security with Azure Spring Apps, Application security principal, Spring Cloud Gateway SSO, and Spring Security
 
-This guide provides an illustrative example of comprehensive security implementation using Azure Spring Apps, Spring Cloud Gateway SSO, and Spring Security. This involves authenticating an application security principal to call microservices behind Azure Spring Apps Spring Cloud Gateway while managing both authorization and authentication processes.
+
+This example shows the procedure of ensuring secure communication between a client application and a microservice that is hosted on Azure Spring Apps and shielded behind a Spring Cloud Gateway. Under these conditions, the client app will be verified as a security principal to initiate contact with the microservice deployed on Azure Spring Apps, via the Azure Spring Apps Spring Cloud Gateway. The methodology employs Spring Cloud Gateway's Single Sign-On feature for the processes of authentication and authorization, realized through the execution of the [client credentials flow](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow).
+
+## Prerequisites
+
+- Azure Spring Apps Entreprise tier Instance, In which an application called books-service is created refer to this [documentation](https://learn.microsoft.com/en-us/azure/spring-apps/quickstart-deploy-apps-enterprise) for provisionning
+- App service with Node runtime, refer to this [documentation](https://learn.microsoft.com/en-us/azure/app-service/quickstart-nodejs?tabs=windows&pivots=development-environment-azure-portal) for provisionning
 
 ## Architecture Overview 
 
@@ -18,7 +24,7 @@ The architecture of this example is demonstrated by a Books Application, consist
 
 ## Security Flow
 
-The Books SPA and the Books Microservice communication are secured through the client credentials flow, utilizing the Spring Cloud Gateway. This flow is as follows:
+The communication between The Books SPA and the Books Microservice is secured through the [client credentials flow](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow), utilizing the Spring Cloud Gateway. This flow is as follows:
 
 ![Authentication Flow](assets/AuthenticationFlow.png)<br/>
 
@@ -41,7 +47,7 @@ First, we will configure the Spring Cloud Gateway app registration in Azure Port
 
 - As we are using the client credentials flow, and the microservices behind Spring Cloud Gateway will be called by client applications security principals (i.e., the Books SPA in our case), we will define App roles for our Spring Cloud Gateway App registration. App roles are used for assigning permissions to users or apps, and are the recommended way for assigning permissions in the client credentials flow. For more details, refer to the [app roles documentation](https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps). 
 
-- We will add 2 App roles: 'Task.Write' (allows the SPA to add books) and 'Task.Read' (allows the SPA to read a book by ID). To add these roles, navigate to the app registration, click on App roles and then on Add new Roles. 
+- We will add 2 App roles: 'Task.Write' (allows the SPA to add books) and 'Task.Read' (allows the SPA to read a book by ID). To add these roles, navigate to the app registration, click on App roles and then on Add new Roles. <br/>
  ![ Add App role](assets/Add-new-Role-GW-APP.png)  <br/>
 
 - Next, add a client secret for the Spring Cloud Gateway App registration. To do so, navigate to Certificate & Secrets and click on New Client Secret. Make sure to copy your client secret as it will be needed in your Spring Cloud Gateway configuration. 
@@ -185,6 +191,9 @@ Call the Books service with the aquired token
     }
     ...
 ```
+##### Client Application code deploy
+
+To Deploy the books SPA to a the node App Service, refer to this [documentation](https://learn.microsoft.com/en-us/azure/app-service/quickstart-nodejs?tabs=windows&pivots=development-environment-azure-portal#deploy-to-azure) 
 
 ### Books Microservice Configuration
 
@@ -272,3 +281,7 @@ public class BooksController{
 
 }
 ```
+
+##### Books-Service Application code deploy
+
+In order to deploy the Spring APPS books-service application refer to this [documentation](https://learn.microsoft.com/en-us/azure/spring-apps/quickstart-deploy-apps-enterprise#deploy-polyglot-applications-with-tanzu-build-service) 
